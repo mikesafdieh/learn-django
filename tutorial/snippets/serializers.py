@@ -2,6 +2,14 @@ from rest_framework import serializers
 from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
+class SnippetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Snippet
+        fields = ('id', 'title', 'code', 'linenos', 'language', 'style')
+
+
+## without using ModelSerializer:
+'''
 class SnippetSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=False, allow_blank=True, max_length=100)
@@ -27,3 +35,31 @@ class SnippetSerializer(serializers.Serializer):
         instance.style = validated_data.get('style', instance.style)
         instance.save()
         return instance
+'''
+
+
+### Serialization/Deserialization Example ###
+# from snippets.models import Snippet
+# from snippets.serializers import SnippetSerializer
+# from rest_framework.renderers import JSONRenderer
+# from rest_framework.parsers import JSONParser
+# import io
+
+# ## Serialization:
+# snippet = Snippet(code='print "hello, world"\n')
+# serializer = SnippetSerializer(snippet)
+
+# # render data into JSON string
+# content = JSONRenderer().render(serializer.data)
+
+# ## Deserialization:
+
+# # parsing a stream into Python native types:
+# stream = io.BytesIO(content)
+# data = JSONParser().parse(stream) # data is a simple python dictionary
+
+# # take those native types and populate an object instance with them;
+# serializer = SnippetSerializer(data=data)
+# serializer.is_valid()
+# serializer.save() # this creates/updates a Snippet
+

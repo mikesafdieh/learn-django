@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.urls import path
 from rest_framework import routers
 from tutorial.quickstart import views
 
@@ -10,5 +11,6 @@ router.register(r'groups', views.GroupViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('', include('snippets.urls')),
 ]
