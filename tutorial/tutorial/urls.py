@@ -1,10 +1,14 @@
 from django.conf.urls import url, include
 from django.urls import path
 from rest_framework import routers
+
 from tutorial.quickstart import views
 
 
+######################
 ### For quickstart ###
+######################
+
 '''
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -18,7 +22,11 @@ urlpatterns = [
 ]
 '''
 
-### For now, use this for the 7-part tutarials ###
+
+####################
+### For snippets ###
+####################
+
 urlpatterns = [
 	path('api-auth/', include('rest_framework.urls')), # for user auth
 	# NOTE: we can name the url whatever we want - it's the `include('rest_framework.urls')` that

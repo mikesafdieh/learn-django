@@ -17,3 +17,6 @@ http --json POST http://127.0.0.1:8000/snippets/ code="print 456"
 # POST with credentials (now that we have basic authentication setup)
 http -a alice:alice POST http://127.0.0.1:8000/snippets/ code="print 789"
 # NOTE: 'alice:alice' is a username:password combo
+
+# GET schema in corejson format
+http http://127.0.0.1:8000/schema/ Accept:application/coreapi+json

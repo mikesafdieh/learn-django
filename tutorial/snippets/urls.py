@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework import renderers
+from rest_framework.schemas import get_schema_view
 
 from snippets import views
 from snippets.views import SnippetViewSet, UserViewSet
@@ -11,6 +12,10 @@ from snippets.views import SnippetViewSet, UserViewSet
 ### ViewSet based with routers ###
 ##################################
 
+# NOTE: This must be created BEFORE we create an instance of the DefaultRouter()!!!
+# auto-generated schema view
+schema_view = get_schema_view(title='Pastebin API')
+
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'snippets', views.SnippetViewSet)
@@ -19,6 +24,7 @@ router.register(r'users', views.UserViewSet)
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
     path('', include(router.urls)),
+    path('schema/', schema_view),
 ]
 
 # NOTE: Default router creates the API root for us, so we don't need the one

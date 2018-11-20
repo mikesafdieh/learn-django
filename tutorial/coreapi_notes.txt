@@ -1,0 +1,17 @@
+# load api schema
+$ coreapi get http://127.0.0.1:8000/schema/
+# NOTE: will only show read-only endpoints if we're not authenticated
+
+# list existing snippets
+$ coreapi action snippets list
+
+# get a specific highlight
+$ coreapi action snippets highlight --param id=1
+
+# authenticate so we can create, update, and delete
+$ coreapi credentials add 127.0.0.1 <username>:<password> --auth basic
+# username = alice, password = alice
+# query schema again for full results
+
+# create a new snippet
+$ coreapi action snippets create --param title="Example" --param code="print('hello, world')"
