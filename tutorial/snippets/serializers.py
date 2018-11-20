@@ -1,14 +1,70 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
+
 from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
-class SnippetSerializer(serializers.ModelSerializer):
+########################################
+### Using HyperlinkedModelSerializer ###
+########################################
+
+# The `HyperlinkedModelSerializer` has the following differences from `ModelSerializer`:
+# 1 - It does not include the `id` field by default.
+# 2 - It includes a `url` field, using `HyperlinkedIdentityField`.
+# 3 - Relationships use `HyperlinkedRelatedField`, instead of `PrimaryKeyRelatedField`.
+
+
+class SnippetSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    highlight = serializers.HyperlinkedIdentityField(view_name='snippet-highlight', format='html')
+
     class Meta:
         model = Snippet
-        fields = ('id', 'title', 'code', 'linenos', 'language', 'style')
+        fields = ('url', 'id', 'highlight', 'owner',
+                  'title', 'code', 'linenos', 'language', 'style')
 
 
-## without using ModelSerializer:
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('url', 'id', 'username', 'snippets')
+
+
+#############################
+### Using ModelSerializer ###
+#############################
+
+'''
+class UserSerializer(serializers.ModelSerializer):
+    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
+    # NOTE: Because 'snippets' is a reverse relationship on the User model, it will not be 
+    # included by default when using the `ModelSerializer` class, so we needed to add an 
+    # explicit field for it.
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'snippets')
+
+
+class SnippetSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    # Could have used `CharField(read_only=True)` here as well.
+    # This field will not be used when updating model instances (since it's read-only).
+    # Since we specified 'owner.username', the owner field will only be represented as
+    # a username of the given User instance (as oppossed to a full user object).
+
+    class Meta:
+        model = Snippet
+        fields = ('id', 'owner', 'title', 'code', 'linenos', 'language', 'style')
+'''
+
+
+#####################################
+### Without using ModelSerializer ###
+#####################################
+
 '''
 class SnippetSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)

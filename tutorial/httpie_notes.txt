@@ -13,3 +13,7 @@ http --form POST http://127.0.0.1:8000/snippets/ code="print 123"
 # POST using JSON
 http --json POST http://127.0.0.1:8000/snippets/ code="print 456"
 # adding a --debug switch will allow us to see the request type in request headers
+
+# POST with credentials (now that we have basic authentication setup)
+http -a alice:alice POST http://127.0.0.1:8000/snippets/ code="print 789"
+# NOTE: 'alice:alice' is a username:password combo
